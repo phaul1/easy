@@ -40,9 +40,6 @@ echo
 echo_blue_bold "Enter RPC URL of the network:"
 read providerURL
 echo
-echo_blue_bold "Enter private key:"
-read privateKeys
-echo
 echo_blue_bold "Enter contract address:"
 read contractAddress
 echo
@@ -67,7 +64,7 @@ const ethers = require("ethers");
 const providerURL = "${providerURL}";
 const provider = new ethers.providers.JsonRpcProvider(providerURL);
 
-const privateKeys = "${privateKeys}";
+const privateKeys = process.env.PRIVATE_KEY;
 
 const contractAddress = "${contractAddress}";
 
@@ -100,9 +97,10 @@ async function main() {
     for (let i = 0; i < numberOfTransactions; i++) {
         console.log("Sending transaction", i + 1, "of", numberOfTransactions);
         await sendTransaction(wallet);
-        const delay = Math.floor(Math.random() * (40 - 10 + 1) + 10); // Random delay between 10 and 40 seconds
-        console.log(\`Waiting \${delay} seconds before next transaction...\`);
-        await new Promise(resolve => setTimeout(resolve, delay * 1000)); // Convert to milliseconds
+        // Random delay between 10 and 40 seconds
+        const delay = Math.floor(Math.random() * (40000 - 10000 + 1)) + 10000;
+        console.log(\`Waiting for \${delay / 1000} seconds...\`);
+        await new Promise(resolve => setTimeout(resolve, delay));
     }
 }
 
